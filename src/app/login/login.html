@@ -1,0 +1,58 @@
+<div
+  class="container mx-auto my-24 max-w-lg bg-white border border-gray-100 shadow-xl rounded-2xl p-10"
+>
+  <h1 class="text-center text-3xl font-light mb-10 text-gray-800">
+    Login To
+    <span
+      class="cursor-pointer font-bold text-blue-700 transition-all duration-300 hover:text-blue-500"
+    >
+      KindCare
+    </span>
+  </h1>
+
+  <form class="flex flex-col space-y-6">
+    <div class="flex flex-col gap-2">
+      <label for="email" class="text-sm font-medium text-gray-700 ml-1">Email</label>
+      <input
+        type="email"
+        placeholder="example@gmail.com"
+        name="email"
+        id="email"
+        class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="password" class="text-sm font-medium text-gray-700 ml-1">Password</label>
+      <input
+        type="password"
+        name="password"
+        id="password"
+        class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+        placeholder="Enter your password"
+      />
+    </div>
+
+    <button
+      class="w-full py-3 mt-2 cursor-pointer transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200 active:scale-[0.98]"
+    >
+      Login
+    </button>
+
+    <div class="space-y-3 pt-4 text-center">
+      <p class="text-sm text-gray-500">
+        Don't have an account?
+        <span class="block mt-1 space-x-1">
+          <a href="#" class="text-blue-600 font-medium hover:underline">Register as Patient</a>
+          <span class="text-gray-300 text-xs">|</span>
+          <a href="#" class="text-blue-600 font-medium hover:underline">Register as Doctor</a>
+        </span>
+      </p>
+
+      <p class="text-sm text-gray-500 pt-2 border-t border-gray-50">
+        Forgot Password?
+        <a href="#" class="text-blue-600 font-medium hover:underline ml-1">Reset Password Here</a>
+      </p>
+    </div>
+  </form>
+</div>
