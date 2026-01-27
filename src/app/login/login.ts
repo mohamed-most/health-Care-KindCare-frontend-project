@@ -29,6 +29,7 @@ export class Login {
         console.log(response);
         localStorage.setItem('access_token', response.data.token);
         localStorage.setItem('user_id', response.data.id);
+        localStorage.setItem('user_role', response.data.roles);
         localStorage.setItem('isLoggedIn', 'true');
         this.statusMessage = 'Login successful';
         this.isSuccess.set(true); // Set isSuccess to true;

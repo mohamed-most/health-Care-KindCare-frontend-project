@@ -6,6 +6,8 @@ import { Home } from './home/home';
 import { NotFound } from './not-found/not-found';
 import { Profile } from './profile/profile';
 import { BookAppointment } from './book-appointment/book-appointment';
+import { MyAppointments } from './my-appointments/my-appointments';
+import { AdminDashboard } from './admin-dashboard/admin-dashboard';
 export const routes: Routes = [
   {
     path: 'login',
@@ -36,6 +38,16 @@ export const routes: Routes = [
     path: 'book-appointment',
     component: BookAppointment,
     title: 'book appointment page',
+  },
+  {
+    path: 'my-appointments',
+    component: MyAppointments,
+    title: 'my appointments page',
+  },
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboard,
+    title: 'admin dashboard page',
   },
   {
     path: '**',

@@ -14,7 +14,33 @@
           class="cursor-pointertext-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5"
           >Home</a
         >
-        @if (isLoggedIn()) {
+        @if (isLoggedIn() && userRole() == 'ADMIN') {
+          <a
+            routerLink="admin-dashboard"
+            class="cursor-pointertext-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5"
+            >Admin Dashboard</a
+          >
+          <a
+            href="#"
+            (click)="handleLogOut($event)"
+            class="text-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5 cursor-pointer"
+          >
+            Logout
+          </a>
+        } @else if (isLoggedIn() && userRole() == 'DOCTOR') {
+          <a
+            routerLink="profile"
+            class="cursor-pointertext-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5"
+            >Doctor Dashboard
+          </a>
+          <a
+            href="#"
+            (click)="handleLogOut($event)"
+            class="text-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5 cursor-pointer"
+          >
+            Logout
+          </a>
+        } @else if (isLoggedIn() && userRole() == 'PATIENT') {
           <a
             routerLink="profile"
             class="cursor-pointertext-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5"
@@ -26,7 +52,7 @@
             >Book Appointment</a
           >
           <a
-            href="#"
+            routerLink="my-appointments"
             class="text-sm font-medium text-gray-600 transition-all duration-300 hover:text-blue-600 hover:-translate-y-0.5 cursor-pointer"
           >
             My Appointment
