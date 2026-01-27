@@ -1,0 +1,70 @@
+<div
+  class="container mx-auto max-w-lg shadow-xl shadow-blue-100/50 rounded-3xl bg-white p-8 my-10 border border-gray-100"
+>
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight">Book Appointment</h2>
+    <p class="text-gray-500 mt-2">Fill in the details to schedule your visit</p>
+  </div>
+
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-1.5">
+      <label
+        class="text-sm font-bold text-gray-700 ml-1 uppercase tracking-wider"
+        for="specialization"
+        >Specialization</label
+      >
+      <select
+        id="specialization"
+        class="outline-none bg-gray-50/50 p-3.5 w-full border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all duration-300 appearance-none text-gray-700"
+      >
+        <option value="" disabled selected>Select specialization</option>
+        <option value="Cardiology">Cardiology</option>
+        <option value="Dermatology">Dermatology</option>
+        <option value="Orthopedics">Orthopedics</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-bold text-gray-700 ml-1 uppercase tracking-wider" for="doctor"
+        >Doctor</label
+      >
+      <select
+        id="doctor"
+        class="outline-none bg-gray-50/50 p-3.5 w-full border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all duration-300 appearance-none text-gray-700"
+      >
+        <option value="" disabled selected>Select Doctor</option>
+        <option value="ALI Mostafa">Dr. Ali Mostafa</option>
+        <option value="Mohamed Mostafa">Dr. Mohamed Mostafa</option>
+        <option value="Ahmed Mostafa">Dr. Ahmed Mostafa</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-bold text-gray-700 ml-1 uppercase tracking-wider"
+        >Purpose of visit</label
+      >
+      <input
+        class="outline-none bg-gray-50/50 p-3.5 w-full border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all duration-300 placeholder:text-gray-400"
+        placeholder="Reason for consultation"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-bold text-gray-700 ml-1 uppercase tracking-wider"
+        >Preferred Date & Time</label
+      >
+      <input
+        type="datetime-local"
+        class="outline-none bg-gray-50/50 p-3.5 w-full border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all duration-300 text-gray-600"
+      />
+    </div>
+
+    <div class="mt-4">
+      <button
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-2xl w-full shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+      >
+        Confirm Appointment
+      </button>
+    </div>
+  </div>
+</div>

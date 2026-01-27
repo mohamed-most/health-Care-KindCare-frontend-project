@@ -1,9 +1,44 @@
-import { Component } from '@angular/core';
-
+import { CommonModule } from '@angular/common'; // 1. Import it here
+import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from './../auth-service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
-  imports: [],
+  imports: [FormsModule, CommonModule],
+
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {}
+export class Login {
+  email = '';
+  password = '';
+  statusMessage = '';
+  isSuccess = signal<boolean | null>(null);
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
+  onLoginFormSubmit(loginForm: any) {
+    this.email = loginForm.value.email;
+    this.password = loginForm.value.password;
+
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (response) => {
+        console.log(response);
+        localStorage.setItem('access_token', response.data.token);
+        localStorage.setItem('user_id', response.data.id);
+        localStorage.setItem('isLoggedIn', 'true');
+        this.statusMessage = 'Login successful';
+        this.isSuccess.set(true); // Set isSuccess to true;
+        // this.router.navigate(['/']);
+      },
+      error: (error) => {
+        this.statusMessage = 'Login failed';
+        this.isSuccess.set(false); // Set isSuccess to false;
+        console.error(error);
+      },
+    });
+  }
+}

@@ -10,7 +10,48 @@
     </span>
   </h1>
 
-  <form class="flex flex-col space-y-6">
+  @if (isSuccess() != null) {
+    @if (isSuccess() === true) {
+      <div class="text-center mb-10 bg-green-300 text-gray-400 font-bold text-xl rounded-2xl p-3">
+        {{ statusMessage }}
+      </div>
+    } @else {
+      <div class="text-center mb-10 bg-red-300 text-white font-bold text-xl rounded-2xl p-3">
+        {{ statusMessage }}
+      </div>
+    }
+  }
+
+  <form
+    class="flex flex-col space-y-6"
+    #loginForm="ngForm"
+    (ngSubmit)="onLoginFormSubmit(loginForm)"
+  >
+    @if (
+      (email.invalid && (email.dirty || email.touched)) ||
+      (password.invalid && (password.dirty || password.touched))
+    ) {
+      <div
+        class="flex items-center gap-3 border border-red-200 bg-red-50 text-sm text-red-600 p-3 rounded-xl animate-pulse"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-5 h-5 shrink-0"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+          />
+        </svg>
+
+        <span class="font-medium">Please enter valid credentials.</span>
+      </div>
+    }
     <div class="flex flex-col gap-2">
       <label for="email" class="text-sm font-medium text-gray-700 ml-1">Email</label>
       <input
@@ -19,6 +60,10 @@
         name="email"
         id="email"
         class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+        #email="ngModel"
+        ngModel
+        required
+        email
       />
     </div>
 
@@ -30,11 +75,22 @@
         id="password"
         class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
         placeholder="Enter your password"
+        ngModel
+        #password="ngModel"
+        required
+        minlength="6"
+        maxlength="20"
       />
     </div>
 
     <button
-      class="w-full py-3 mt-2 cursor-pointer transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-200 active:scale-[0.98]"
+      [disabled]="!loginForm.form.valid"
+      type="submit"
+      class="w-full py-3 mt-2 transition-all duration-300 text-white font-semibold rounded-xl shadow-lg active:scale-[0.98]"
+      [ngClass]="{
+        'bg-gray-400 cursor-not-allowed': !loginForm.form.valid,
+        'bg-blue-600 hover:bg-blue-700 shadow-blue-200 cursor-pointer': loginForm.form.valid,
+      }"
     >
       Login
     </button>
