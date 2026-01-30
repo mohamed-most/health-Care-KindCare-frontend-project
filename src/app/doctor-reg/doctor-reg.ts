@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../auth-service';
+import { ApiService } from '../api-service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class DoctorReg implements OnDestroy {
   doctorForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    fullName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     licenseNumber: new FormControl('', [
@@ -28,7 +28,7 @@ export class DoctorReg implements OnDestroy {
   private messageTimeout: any;
 
   constructor(
-    private authService: AuthService,
+    private apiService: ApiService,
     private router: Router,
   ) {}
 
@@ -46,7 +46,7 @@ export class DoctorReg implements OnDestroy {
     if (formData.specialization) {
       formData.specialization = formData.specialization.toUpperCase();
     }
-    this.authService.register(formData).subscribe({
+    this.apiService.register(formData).subscribe({
       next: (response) => {
         this.showStatus(true, 'Registration successful! Welcome to the portal.');
         // After successful registration, navigate to the login page

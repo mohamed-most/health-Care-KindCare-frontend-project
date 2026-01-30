@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-gray-50/50 py-16 px-4">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-16">
+      <h1 class="text-5xl font-black text-gray-900 tracking-tight mb-4">Support Center</h1>
+      <p class="text-gray-500 text-lg font-medium">Everything you need to know about KindCare</p>
+    </div>
+
+    <div class="flex items-center gap-4 my-10">
+      <div class="h-[1px] grow bg-gray-200"></div>
+      <span
+        class="text-[11px] font-black uppercase tracking-[0.25em] text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full"
+      >
+        General Questions
+      </span>
+      <div class="h-[1px] grow bg-gray-200"></div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      @for (faq of faqs(); track faq.id) {
+        <div
+          class="group overflow-hidden bg-white border border-gray-100 rounded-[2rem] transition-all duration-300"
+          [ngClass]="{ 'shadow-2xl shadow-blue-500/10 border-blue-100': expandedId() === faq.id }"
+        >
+          <button
+            (click)="toggle(faq.id)"
+            class="w-full flex items-center justify-between p-7 text-left outline-none"
+          >
+            <span
+              class="text-lg font-bold text-gray-800 transition-colors group-hover:text-blue-600"
+            >
+              {{ faq.question }}
+            </span>
+
+            <div
+              class="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300"
+              [ngClass]="
+                expandedId() === faq.id
+                  ? 'bg-blue-600 text-white rotate-180'
+                  : 'bg-gray-100 text-gray-400'
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="3"
+                stroke="currentColor"
+                class="size-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            </div>
+          </button>
+
+          @if (expandedId() === faq.id) {
+            <div class="px-7 pb-8">
+              <div class="h-[1px] bg-gray-50 mb-6"></div>
+              <p class="text-gray-600 leading-relaxed font-normal">
+                {{ faq.answer }}
+              </p>
+            </div>
+          }
+        </div>
+      } @empty {
+        <div
+          class="text-center py-20 bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100"
+        >
+          <p class="text-gray-400 font-medium">No questions available at the moment.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

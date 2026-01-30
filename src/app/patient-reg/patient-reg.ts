@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../auth-service';
+import { ApiService } from '../api-service';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-patient-reg',
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class PatientReg {
   RegistrationForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    fullName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
@@ -23,7 +23,7 @@ export class PatientReg {
   statusCode?: number;
   message?: string;
   constructor(
-    private authService: AuthService,
+    private apiService: ApiService,
     private router: Router,
   ) {}
   onSubmitForm(event: Event) {
@@ -32,7 +32,7 @@ export class PatientReg {
 
     const formData = this.RegistrationForm.value;
 
-    this.authService.register(formData).subscribe({
+    this.apiService.register(formData).subscribe({
       next: (response) => {
         this.message = 'Registration successful.';
         this.succeeded.set(true); // 1. Set the state to true

@@ -24,11 +24,9 @@
                 ? 'bg-blue-50 text-blue-600 border-blue-100'
                 : 'text-slate-500 border-transparent hover:bg-slate-50'
             "
-            class="group w-full flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-300 font-semibold text-sm"
+            class="group w-full flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all font-semibold text-sm"
           >
-            <span [class]="isPatientButtonClicked() ? 'scale-110' : ''" class="transition-transform"
-              >👥</span
-            >
+            <span [class]="isPatientButtonClicked() ? 'scale-110' : ''">👥</span>
             Patients
             <span
               *ngIf="isPatientButtonClicked()"
@@ -43,11 +41,9 @@
                 ? 'bg-purple-50 text-purple-600 border-purple-100'
                 : 'text-slate-500 border-transparent hover:bg-slate-50'
             "
-            class="group w-full flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-300 font-semibold text-sm"
+            class="group w-full flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all font-semibold text-sm"
           >
-            <span [class]="isDoctorButtonClicked() ? 'scale-110' : ''" class="transition-transform"
-              >🩺</span
-            >
+            <span [class]="isDoctorButtonClicked() ? 'scale-110' : ''">🩺</span>
             Doctors
             <span
               *ngIf="isDoctorButtonClicked()"
@@ -56,10 +52,20 @@
           </button>
 
           <button
-            class="group w-full flex items-center gap-3 px-4 py-4 rounded-2xl border border-transparent text-slate-500 hover:bg-slate-50 transition-all duration-300 font-semibold text-sm"
+            (click)="handleFaqClick()"
+            [class]="
+              isFaqButtonClicked()
+                ? 'bg-amber-50 text-amber-600 border-amber-100'
+                : 'text-slate-500 border-transparent hover:bg-slate-50'
+            "
+            class="group w-full flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all font-semibold text-sm"
           >
-            <span>📅</span>
-            Appointments
+            <span [class]="isFaqButtonClicked() ? 'scale-110' : ''">❓</span>
+            FAQ Manager
+            <span
+              *ngIf="isFaqButtonClicked()"
+              class="ml-auto w-2 h-2 bg-amber-500 rounded-full"
+            ></span>
           </button>
         </div>
 
@@ -80,40 +86,36 @@
     </div>
 
     <div class="col-span-12 lg:col-span-9">
-      <div class="mb-8 flex items-end justify-between">
-        <div>
-          <h1 class="text-3xl font-black text-slate-900">
-            {{
-              isPatientButtonClicked()
-                ? 'Patient Registry'
-                : isDoctorButtonClicked()
-                  ? 'Medical Staff'
+      <div class="mb-8">
+        <h1 class="text-3xl font-black text-slate-900">
+          {{
+            isPatientButtonClicked()
+              ? 'Patient Registry'
+              : isDoctorButtonClicked()
+                ? 'Medical Staff'
+                : isFaqButtonClicked()
+                  ? 'FAQ Management'
                   : 'Welcome back!'
-            }}
-          </h1>
-          <p class="text-slate-500 mt-1">Real-time overview of KindCare hospital system.</p>
-        </div>
+          }}
+        </h1>
+        <p class="text-slate-500 mt-1">Real-time overview of KindCare hospital system.</p>
       </div>
 
-      <div class="space-y-4">
+      <div class="space-y-6">
         @if (isPatientButtonClicked()) {
-          <div
-            class="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
-          >
+          <div class="grid grid-cols-1 gap-4">
             @for (patient of patients(); track patient.id) {
               <div
-                class="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-xl hover:shadow-slate-200/50 transition-all group"
+                class="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-xl transition-all group"
               >
                 <div class="flex items-center gap-5">
                   <div
-                    class="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center text-xl shadow-inner group-hover:rotate-6 transition-transform"
+                    class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-xl group-hover:rotate-6 transition-transform"
                   >
                     👤
                   </div>
                   <div>
-                    <h3 class="font-bold text-slate-800 text-lg leading-tight">
-                      {{ patient.user.name }}
-                    </h3>
+                    <h3 class="font-bold text-slate-800 text-lg">{{ patient.user.name }}</h3>
                     <p class="text-slate-400 text-sm">{{ patient.user.email }}</p>
                   </div>
                 </div>
@@ -126,28 +128,20 @@
                   }
                 </div>
               </div>
-            } @empty {
-              <div
-                class="p-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-slate-200"
-              >
-                <p class="text-slate-400 font-medium">No patient records found.</p>
-              </div>
             }
           </div>
         }
 
         @if (isDoctorButtonClicked()) {
-          <div
-            class="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
-          >
+          <div class="grid grid-cols-1 gap-4">
             @for (doctor of doctors(); track doctor.id) {
               <div
-                class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-purple-100 transition-all border-l-[6px] border-l-purple-500"
+                class="bg-white p-6 rounded-[1.5rem] border border-slate-100 border-l-[6px] border-l-purple-500 shadow-sm hover:shadow-xl transition-all"
               >
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div class="flex items-center gap-5">
                     <div
-                      class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100"
+                      class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl"
                     >
                       🩺
                     </div>
@@ -164,7 +158,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="flex flex-col items-end">
+                  <div class="text-right">
                     <p class="text-slate-500 text-sm mb-2 font-medium">{{ doctor.user.email }}</p>
                     <button class="text-xs font-bold text-purple-600 hover:underline">
                       View Schedule →
@@ -173,6 +167,78 @@
                 </div>
               </div>
             }
+          </div>
+        }
+
+        @if (isFaqButtonClicked()) {
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div
+              class="lg:col-span-1 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 h-fit sticky top-8"
+            >
+              <h3 class="text-xl font-black text-slate-800 mb-6">Create FAQ</h3>
+              <div class="space-y-4">
+                <div>
+                  <label
+                    class="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1"
+                    >Question</label
+                  >
+                  <input
+                    [(ngModel)]="newFaq().question"
+                    class="w-full mt-1 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-amber-400 outline-none text-sm"
+                    placeholder="e.g. Refund policy?"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1"
+                    >Answer</label
+                  >
+                  <textarea
+                    [(ngModel)]="newFaq().answer"
+                    rows="4"
+                    class="w-full mt-1 p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-amber-400 outline-none text-sm resize-none"
+                    placeholder="Explain the details..."
+                  ></textarea>
+                </div>
+                <button
+                  (click)="addFaq()"
+                  class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-lg shadow-amber-200 transition-all active:scale-95"
+                >
+                  Publish FAQ
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-4">
+              <h3 class="text-xl font-black text-slate-800 mb-2">
+                Live FAQ List ({{ faqs().length }})
+              </h3>
+              @for (faq of faqs(); track faq.id) {
+                <div
+                  class="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm transition-all hover:border-amber-200"
+                >
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0 text-amber-600 font-bold"
+                    >
+                      Q
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-slate-800 leading-tight mb-2 text-lg">
+                        {{ faq.question }}
+                      </h4>
+                      <p class="text-slate-500 text-sm leading-relaxed">{{ faq.answer }}</p>
+                    </div>
+                  </div>
+                </div>
+              } @empty {
+                <div
+                  class="p-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-slate-200"
+                >
+                  <p class="text-slate-400 font-medium">No FAQs found. Start by creating one!</p>
+                </div>
+              }
+            </div>
           </div>
         }
       </div>

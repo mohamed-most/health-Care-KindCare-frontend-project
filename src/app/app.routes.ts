@@ -8,6 +8,7 @@ import { Profile } from './profile/profile';
 import { BookAppointment } from './book-appointment/book-appointment';
 import { MyAppointments } from './my-appointments/my-appointments';
 import { AdminDashboard } from './admin-dashboard/admin-dashboard';
+import { Faq } from './faq/faq';
 export const routes: Routes = [
   {
     path: 'login',
@@ -48,6 +49,11 @@ export const routes: Routes = [
     path: 'admin-dashboard',
     component: AdminDashboard,
     title: 'admin dashboard page',
+  },
+  {
+    path: 'faq',
+    component: Faq,
+    title: 'faq page',
   },
   {
     path: '**',

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'; // 1. Import it here
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from './../auth-service';
+import { ApiService } from '../api-service';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
@@ -17,23 +17,27 @@ export class Login {
   isSuccess = signal<boolean | null>(null);
 
   constructor(
-    private authService: AuthService,
+    private apiService: ApiService,
     private router: Router,
   ) {}
   onLoginFormSubmit(loginForm: any) {
     this.email = loginForm.value.email;
     this.password = loginForm.value.password;
 
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
+    this.apiService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
-        console.log(response);
-        localStorage.setItem('access_token', response.data.token);
-        localStorage.setItem('user_id', response.data.id);
-        localStorage.setItem('user_role', response.data.roles);
-        localStorage.setItem('isLoggedIn', 'true');
-        this.statusMessage = 'Login successful';
-        this.isSuccess.set(true); // Set isSuccess to true;
-        // this.router.navigate(['/']);
+        if (response.statusCode === 200) {
+          localStorage.setItem('access_token', response.data.token);
+          localStorage.setItem('user_id', response.data.id);
+          localStorage.setItem('user_role', response.data.roles);
+          localStorage.setItem('isLoggedIn', 'true');
+          this.statusMessage = 'Login successful';
+          this.isSuccess.set(true); // Set isSuccess to true;
+          this.router.navigate(['/']);
+        } else {
+          this.statusMessage = 'Login failed';
+          this.isSuccess.set(false);
+        }
       },
       error: (error) => {
         this.statusMessage = 'Login failed';

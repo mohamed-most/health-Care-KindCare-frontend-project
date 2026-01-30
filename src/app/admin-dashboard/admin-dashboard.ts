@@ -1,60 +1,91 @@
-import { Component, signal } from '@angular/core';
-import { AuthService } from '../auth-service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, signal, OnInit } from '@angular/core';
+import { ApiService } from '../api-service';
+import { NgIf, NgClass, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [],
+  standalone: true,
+  imports: [NgIf, NgClass, NgFor, FormsModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboard {
+export class AdminDashboard implements OnInit {
+  // Navigation View States
   isPatientButtonClicked = signal(false);
   isDoctorButtonClicked = signal(false);
-  isAppointmentsButtonClicked = signal(false);
+  isFaqButtonClicked = signal(false);
 
-  patients = signal([] as any[]);
-  doctors = signal([] as any[]);
-  constructor(private authService: AuthService) {}
+  // Data Stores
+  patients = signal<any[]>([]);
+  doctors = signal<any[]>([]);
+  faqs = signal<any[]>([]);
+
+  // Form State
+  newFaq = signal({ question: '', answer: '' });
+
+  constructor(private apiService: ApiService) {}
 
   ngOnInit() {
-    console.log(this.doctors());
     this.getAllPatients();
     this.getAllDoctors();
+    this.getAllFaqs();
   }
+
+  // --- Data Fetching ---
   getAllPatients() {
-    console.log('getAllPatients');
-    this.authService.getAllPatients().subscribe({
-      next: (response) => {
-        console.log(response);
-        this.patients.set(response.data);
-      },
-      error: (error) => {
-        console.log(error);
-      },
+    this.apiService.getAllPatients().subscribe({
+      next: (res) => this.patients.set(res.data),
+      error: (err) => console.error('Patient load failed', err),
     });
   }
 
   getAllDoctors() {
-    console.log('getAllDoctors');
-    this.authService.getAllDoctors().subscribe({
-      next: (response) => {
-        this.doctors.set(response.data);
-      },
-      error: (error) => {
-        console.log(error);
-      },
+    this.apiService.getAllDoctors().subscribe({
+      next: (res) => this.doctors.set(res.data),
+      error: (err) => console.error('Doctor load failed', err),
     });
   }
 
+  getAllFaqs() {
+    this.apiService.getAllFaq().subscribe({
+      next: (res) => this.faqs.set(res.data),
+      error: (err) => console.error('FAQ load failed', err),
+    });
+  }
+
+  // --- Actions ---
+  addFaq() {
+    if (!this.newFaq().question || !this.newFaq().answer) return;
+
+    this.apiService.addFaq(this.newFaq()).subscribe({
+      next: () => {
+        this.getAllFaqs(); // Refresh list
+        this.newFaq.set({ question: '', answer: '' }); // Clear form
+      },
+      error: (err) => console.error('Add FAQ failed', err),
+    });
+  }
+
+  // --- Navigation Handlers ---
   handlePatientClick() {
-    this.isPatientButtonClicked.set(!this.isPatientButtonClicked());
-    this.isDoctorButtonClicked.set(false);
-    this.isAppointmentsButtonClicked.set(false);
+    this.resetViews();
+    this.isPatientButtonClicked.set(true);
   }
 
   handleDoctorClick() {
+    this.resetViews();
+    this.isDoctorButtonClicked.set(true);
+  }
+
+  handleFaqClick() {
+    this.resetViews();
+    this.isFaqButtonClicked.set(true);
+  }
+
+  private resetViews() {
     this.isPatientButtonClicked.set(false);
-    this.isDoctorButtonClicked.set(!this.isDoctorButtonClicked());
-    this.isAppointmentsButtonClicked.set(false);
+    this.isDoctorButtonClicked.set(false);
+    this.isFaqButtonClicked.set(false);
   }
 }
