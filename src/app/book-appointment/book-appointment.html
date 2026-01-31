@@ -1,43 +1,45 @@
 <div
-  class="container mx-auto max-w-lg shadow-2xl shadow-blue-100 rounded-[2.5rem] bg-white p-10 my-10 border border-gray-100 font-sans"
+  class="container mx-auto max-w-lg shadow-2xl shadow-blue-100 rounded-[2.5rem] bg-white p-10 my-10 border border-gray-100 font-sans animate-in fade-in duration-500"
 >
   <div class="text-center mb-10">
     <h2 class="text-3xl font-black text-gray-800 tracking-tight">Book Appointment</h2>
-    <p class="text-gray-400 mt-2">Fill in the details to schedule your visit</p>
+    <p class="text-gray-400 mt-2">Schedule your visit with our specialists</p>
   </div>
-  @if (message() != '' && !isError()) {
-    <div>
-      <p class="text-sm text-green-600 font-medium bg-green-300 text-center p-2 rounded-2xl mb-2.5">
+
+  @if (message()) {
+    <div class="animate-in slide-in-from-top-2 duration-300">
+      <p
+        [ngClass]="
+          isError()
+            ? 'bg-red-50 text-red-600 border-red-100'
+            : 'bg-green-50 text-green-600 border-green-100'
+        "
+        class="text-sm font-bold text-center p-4 rounded-2xl mb-6 border"
+      >
         {{ message() }}
       </p>
     </div>
   }
-  @if (message() != '' && isError()) {
-    <div>
-      <p class="text-sm text-red-600 font-medium bg-red-300 text-center p-2 rounded-2xl mb-2.5">
-        {{ message() || 'Something went wrong' }}
-      </p>
-    </div>
-  }
+
   <form
     class="flex flex-col gap-6"
     [formGroup]="bookAppointmentForm"
     (ngSubmit)="onSubmitForm($event)"
   >
     <div class="flex flex-col gap-2 relative">
-      <label class="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest"
-        >Specialization</label
+      <label class="text-[10px] font-black text-gray-400 ml-1 uppercase tracking-widest"
+        >Department</label
       >
       <button
         type="button"
         (click)="toggleDropdownSpec()"
-        class="flex items-center justify-between bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl hover:bg-gray-100 transition-colors text-gray-700 font-medium"
+        class="flex items-center justify-between bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl hover:bg-gray-100 transition-all text-gray-700 font-bold"
         [ngClass]="{ 'border-blue-500 bg-white ring-4 ring-blue-500/10': isOpenedSpec() }"
       >
         <span>{{ selectedSpec() }}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-gray-400"
+          class="h-5 w-5 text-gray-400 transition-transform"
           [ngClass]="{ 'rotate-180': isOpenedSpec() }"
           fill="none"
           viewBox="0 0 24 24"
@@ -54,14 +56,14 @@
 
       @if (isOpenedSpec()) {
         <div
-          class="absolute z-50 top-[calc(100%+8px)] left-0 w-full bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden py-2"
+          class="absolute z-50 top-[calc(100%+8px)] left-0 w-full bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden py-2 animate-in fade-in zoom-in-95 duration-200"
         >
-          @for (spec of specializations; track spec) {
+          @for (spec of specializations(); track spec) {
             <div
               (click)="selectOption(spec)"
-              class="px-5 py-3 hover:bg-blue-600 hover:text-white cursor-pointer transition-colors mx-2 rounded-xl font-medium text-gray-600 mb-1 last:mb-0"
+              class="px-5 py-3 hover:bg-blue-600 hover:text-white cursor-pointer transition-colors mx-2 rounded-xl font-bold text-gray-600 mb-1 last:mb-0"
             >
-              {{ spec }}
+              {{ spec.name || spec }}
             </div>
           }
         </div>
@@ -69,14 +71,15 @@
     </div>
 
     <div class="flex flex-col gap-2 relative">
-      <label class="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest"
-        >Available Doctor</label
+      <label class="text-[10px] font-black text-gray-400 ml-1 uppercase tracking-widest"
+        >Available Physician</label
       >
       <button
         type="button"
         (click)="toggleDropdownDoc()"
-        class="flex items-center justify-between bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl hover:bg-gray-100 transition-colors text-gray-700 font-medium"
-        [ngClass]="{ '!border-blue-500 !bg-white ring-4 ring-blue-500/10': isOpenedDoc() }"
+        [disabled]="doctors().length === 0"
+        class="flex items-center justify-between bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl hover:bg-gray-100 transition-all text-gray-700 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+        [ngClass]="{ 'border-blue-500 bg-white ring-4 ring-blue-500/10': isOpenedDoc() }"
       >
         <span>{{ selectedDoctor() }}</span>
         <svg
@@ -98,66 +101,75 @@
 
       @if (isOpenedDoc()) {
         <div
-          class="absolute z-50 top-[calc(100%+8px)] left-0 w-full bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden py-2"
+          class="absolute z-50 top-[calc(100%+8px)] left-0 w-full bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden py-2 animate-in fade-in zoom-in-95 duration-200"
         >
-          @for (doc of doctors(); track doc) {
+          @for (doc of doctors(); track doc.user.id) {
             <div
               (click)="selectOptionDoc(doc)"
-              class="px-5 py-3 hover:bg-blue-600 hover:text-white cursor-pointer transition-colors mx-2 rounded-xl font-medium text-gray-600 mb-1 last:mb-0"
+              class="px-5 py-3 hover:bg-blue-600 hover:text-white cursor-pointer transition-colors mx-2 rounded-xl font-bold text-gray-600 mb-1 last:mb-0"
             >
               Dr. {{ doc.user.fullName }}
             </div>
           } @empty {
-            <div class="p-4 text-center text-gray-400 text-sm">No doctors currently available</div>
+            <div class="p-4 text-center text-gray-400 text-xs font-bold uppercase tracking-tighter">
+              Please select a department first
+            </div>
           }
         </div>
       }
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest"
-        >Purpose of visit</label
+      <label class="text-[10px] font-black text-gray-400 ml-1 uppercase tracking-widest"
+        >Reason for Consultation</label
       >
       <input
         formControlName="purposeOfConsultation"
-        class="outline-none bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 font-medium text-gray-700"
-        placeholder="Reason for consultation"
+        class="outline-none bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 font-bold text-gray-700"
+        placeholder="e.g. Annual physical exam"
       />
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest"
-        >initial symptoms</label
+      <label class="text-[10px] font-black text-gray-400 ml-1 uppercase tracking-widest"
+        >Describe Symptoms</label
       >
       <input
-        class="outline-none bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 font-medium text-gray-700"
-        placeholder="Reason for consultation"
         formControlName="initialSymptoms"
+        class="outline-none bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-gray-300 font-bold text-gray-700"
+        placeholder="e.g. Mild fever, headache"
       />
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="text-xs font-black text-gray-400 ml-1 uppercase tracking-widest"
-        >Preferred Date & Time</label
+      <label class="text-[10px] font-black text-gray-400 ml-1 uppercase tracking-widest"
+        >Preferred Schedule</label
       >
       <input
         formControlName="startTime"
         type="datetime-local"
-        class="outline-none bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-600 font-medium"
+        class="outline-none bg-gray-50 p-4 w-full border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-600 font-bold"
       />
     </div>
 
     <button
       type="submit"
-      [disabled]="bookAppointmentForm.invalid"
-      class="mt-4 font-black py-5 px-6 rounded-2xl w-full transition-all active:scale-[0.98]"
-      [ngClass]="{
-        'bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200':
-          bookAppointmentForm.valid,
-        'bg-gray-300 text-gray-500 cursor-not-allowed': bookAppointmentForm.invalid,
-      }"
+      [disabled]="bookAppointmentForm.invalid || isLoading()"
+      class="mt-4 font-black py-5 px-6 rounded-2xl w-full transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+      [ngClass]="
+        bookAppointmentForm.valid && !isLoading()
+          ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-200'
+          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+      "
     >
-      Confirm Appointment
+      @if (isLoading()) {
+        <span
+          class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+        ></span>
+        Processing...
+      } @else {
+        Confirm Appointment
+      }
     </button>
   </form>
 </div>

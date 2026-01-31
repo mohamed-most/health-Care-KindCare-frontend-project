@@ -52,8 +52,8 @@
         </div>
 
         <div>
-          <p class="text-3xl font-bold text-gray-800">{{ userData()?.fullName }}</p>
-          <p class="text-blue-600 font-medium">{{ userData()?.roles?.[0]?.name }} Account</p>
+          <p class="text-3xl font-bold text-gray-800">{{ doctorData()?.user.fullName }}</p>
+          <p class="text-blue-600 font-medium">{{ doctorData()?.user.roles?.[0]?.name }} Account</p>
         </div>
       </div>
 
@@ -106,7 +106,7 @@
           <div
             class="p-4 bg-white border border-gray-200 rounded-2xl text-gray-700 font-semibold shadow-sm"
           >
-            {{ userData()?.fullName }}
+            {{ doctorData()?.user?.fullName }}
           </div>
         </div>
         <div class="space-y-2">
@@ -116,7 +116,7 @@
           <div
             class="p-4 bg-white border border-gray-200 rounded-2xl text-gray-700 font-semibold shadow-sm"
           >
-            {{ userData()?.email }}
+            {{ doctorData()?.user?.email }}
           </div>
         </div>
         <div class="space-y-2">
@@ -126,7 +126,7 @@
           <div
             class="p-4 bg-white border border-gray-200 rounded-2xl text-gray-700 font-semibold shadow-sm"
           >
-            {{ userData()?.roles?.[0]?.name }}
+            {{ doctorData()?.user?.roles?.[0]?.name }}
           </div>
         </div>
       </div>
@@ -146,27 +146,27 @@
           <div
             class="p-4 bg-white border border-gray-200 rounded-2xl text-gray-700 font-semibold shadow-sm"
           >
-            {{ userData()?.phoneNumber || 'Not Provided' }}
+            {{ doctorData()?.user?.phoneNumber || 'Not Provided' }}
           </div>
         </div>
         <div class="space-y-2">
           <label class="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1"
-            >Blood Group</label
+            >specialization</label
           >
           <div
             class="p-4 bg-white border border-gray-200 rounded-2xl text-red-600 font-bold shadow-sm"
           >
-            {{ userData()?.bloodGroup || 'N/A' }}
+            {{ doctorData()?.specialization || 'N/A' }}
           </div>
         </div>
         <div class="space-y-2">
           <label class="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1"
-            >Genotype</label
+            >license Number</label
           >
           <div
             class="p-4 bg-white border border-gray-200 rounded-2xl text-gray-700 font-semibold shadow-sm"
           >
-            {{ userData()?.genotype || 'N/A' }}
+            {{ doctorData()?.licenseNumber || 'N/A' }}
           </div>
         </div>
       </div>

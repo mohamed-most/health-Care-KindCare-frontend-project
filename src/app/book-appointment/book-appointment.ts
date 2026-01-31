@@ -1,14 +1,14 @@
-import { Component, signal } from '@angular/core';
-import { NgClass, TitleCasePipe } from '@angular/common';
+import { Component, signal, OnInit, inject } from '@angular/core';
+import { NgClass } from '@angular/common';
 import {
   FormControl,
-  FormControlName,
   FormGroup,
   FormsModule,
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ApiService } from '../api-service';
+
 @Component({
   selector: 'app-book-appointment',
   standalone: true,
@@ -16,72 +16,93 @@ import { ApiService } from '../api-service';
   templateUrl: './book-appointment.html',
   styleUrl: './book-appointment.css',
 })
-export class BookAppointment {
-  constructor(private apiService: ApiService) {}
+export class BookAppointment implements OnInit {
+  private apiService = inject(ApiService);
 
+  // Status Signals
   message = signal('');
   isError = signal(false);
-  // Specialization State
+  isLoading = signal(false);
+
+  // Dropdown States
   isOpenedSpec = signal(false);
   selectedSpec = signal('Select specialization');
-  specializations = ['Cardiology', 'Dermatology', 'Orthopedics'];
+  specializations = signal<any[]>([]);
 
-  // Doctor State
   isOpenedDoc = signal(false);
   selectedDoctor = signal('Select doctor');
-  doctors = signal([] as any[]);
-  currentDocId = signal(-1);
+  doctors = signal<any[]>([]);
 
-  //form
+  // Form Initialization
   bookAppointmentForm = new FormGroup({
-    doctorId: new FormControl('', [Validators.required]),
+    doctorId: new FormControl(-1, [Validators.required]),
     purposeOfConsultation: new FormControl('', [Validators.required]),
     initialSymptoms: new FormControl('', [Validators.required]),
     startTime: new FormControl('', [Validators.required]),
   });
+
+  ngOnInit() {
+    this.getSpecializations();
+  }
+
   toggleDropdownSpec() {
-    this.isOpenedDoc.set(false); // Close other if open
+    this.isOpenedDoc.set(false);
     this.isOpenedSpec.update((v) => !v);
   }
 
   toggleDropdownDoc() {
-    this.isOpenedSpec.set(false); // Close other if open
+    this.isOpenedSpec.set(false);
     this.isOpenedDoc.update((v) => !v);
   }
 
-  selectOption(option: string) {
-    this.apiService.getDoctorsBySpec(option).subscribe((res) => {
-      console.log(res);
-      this.doctors.set(res.data);
-    });
-    this.selectedSpec.set(option);
+  // When a specialization is picked
+  selectOption(spec: any) {
+    const specName = typeof spec === 'string' ? spec : spec.name;
+
+    this.selectedSpec.set(specName);
     this.isOpenedSpec.set(false);
+
+    // Reset doctor selection when specialization changes
     this.selectedDoctor.set('Select doctor');
+    this.bookAppointmentForm.patchValue({ doctorId: -1 });
+
+    this.apiService.getDoctorsBySpec(specName).subscribe({
+      next: (res) => this.doctors.set(res.data || []),
+      error: (err) => console.error('Error fetching doctors:', err),
+    });
   }
 
+  // When a doctor is picked
   selectOptionDoc(doc: any) {
-    console.log(doc);
-    this.bookAppointmentForm.patchValue({ doctorId: doc.user.id });
-    this.selectedDoctor.set('DR. ' + doc.user.fullName);
+    this.bookAppointmentForm.patchValue({ doctorId: Number(doc.id) });
+    this.selectedDoctor.set(`Dr. ${doc.user.fullName}`);
     this.isOpenedDoc.set(false);
   }
 
-  //submit
   onSubmitForm(event: Event) {
     event.preventDefault();
     if (this.bookAppointmentForm.invalid) return;
-    this.apiService.bookAppointment(this.bookAppointmentForm.value).subscribe({
+
+    console.log(this.bookAppointmentForm.value);
+    this.isLoading.set(true);
+
+    // Prepare data (Ensuring date format is ISO compatible)
+    const formData = { ...this.bookAppointmentForm.value };
+    console.log(formData.doctorId);
+
+    this.apiService.bookAppointment(formData).subscribe({
       next: (response) => {
-        if (response.statusCode === 200) {
-          this.message.set('Appointment Booked Successfully');
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          this.isError.set(false);
+          this.message.set('Appointment Booked Successfully! ✨');
           this.resetForm();
         }
+        this.isLoading.set(false);
       },
       error: (error) => {
-        console.log(error);
         this.isError.set(true);
-        this.message.set(error.error.message);
-        this.resetForm();
+        this.message.set(error.error?.message || 'Failed to book appointment');
+        this.isLoading.set(false);
       },
     });
   }
@@ -89,9 +110,17 @@ export class BookAppointment {
   resetForm() {
     this.bookAppointmentForm.reset();
     this.selectedDoctor.set('Select doctor');
-    this.selectOption('Select specialization');
-    setTimeout(() => {
-      this.message.set('');
-    }, 2000);
+    this.selectedSpec.set('Select specialization');
+    this.doctors.set([]);
+
+    // Clear message after 3 seconds
+    setTimeout(() => this.message.set(''), 3000);
+  }
+
+  getSpecializations() {
+    this.apiService.getSpecializations().subscribe({
+      next: (response) => this.specializations.set(response.data || []),
+      error: (err) => console.error('Error loading specs:', err),
+    });
   }
 }

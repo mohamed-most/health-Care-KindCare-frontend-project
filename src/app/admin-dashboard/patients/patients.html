@@ -1,0 +1,46 @@
+<div class="animate-in fade-in duration-500">
+  <div class="mb-8">
+    <h1 class="text-3xl font-black text-slate-900">Patient Registry</h1>
+    <p class="text-slate-500 mt-1">Manage and view all registered patients in KindCare.</p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4">
+    @if (isLoading()) {
+      <div class="p-10 text-center text-slate-400">Loading patients...</div>
+    } @else {
+      @for (patient of patients(); track patient.id) {
+        <div
+          class="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-xl transition-all group"
+        >
+          <div class="flex items-center gap-5">
+            <div
+              class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-xl group-hover:rotate-6 transition-transform"
+            >
+              👤
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">{{ patient.user.name }}</h3>
+              <p class="text-slate-400 text-sm">{{ patient.user.email }}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            @for (role of patient.user.roles; track role.id) {
+              <span
+                class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase tracking-widest"
+              >
+                {{ role.name }}
+              </span>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div
+          class="p-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-slate-200"
+        >
+          <p class="text-slate-400 font-medium">No patients found in the system.</p>
+        </div>
+      }
+    }
+  </div>
+</div>

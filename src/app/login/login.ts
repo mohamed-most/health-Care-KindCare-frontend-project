@@ -20,6 +20,7 @@ export class Login {
     private apiService: ApiService,
     private router: Router,
   ) {}
+
   onLoginFormSubmit(loginForm: any) {
     this.email = loginForm.value.email;
     this.password = loginForm.value.password;
@@ -33,7 +34,9 @@ export class Login {
           localStorage.setItem('isLoggedIn', 'true');
           this.statusMessage = 'Login successful';
           this.isSuccess.set(true); // Set isSuccess to true;
-          this.router.navigate(['/']);
+          if (response.data.roles === 'patient') this.router.navigate(['profile']);
+          else if (response.data.roles === 'doctor') this.router.navigate(['doctor-profile']);
+          else this.router.navigate(['/']);
         } else {
           this.statusMessage = 'Login failed';
           this.isSuccess.set(false);

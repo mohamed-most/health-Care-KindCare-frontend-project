@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../api-service';
 import { Router } from '@angular/router';
+import { effect } from '@angular/core';
 @Component({
   selector: 'app-nav',
   imports: [RouterLink],
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';
 export class Nav {
   isLoggedIn = signal<boolean>(localStorage.getItem('isLoggedIn') === 'true');
   userRole = signal<string | null>(localStorage.getItem('user_role'));
+
   constructor(
     private apiService: ApiService,
     private router: Router,

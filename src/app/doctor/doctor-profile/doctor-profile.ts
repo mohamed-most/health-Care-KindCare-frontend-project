@@ -1,16 +1,15 @@
-import { Component, signal, OnInit } from '@angular/core';
-import { ApiService } from '../api-service';
-import { RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
+import { signal } from '@angular/core';
+import { ApiService } from '../../api-service';
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.html',
-  styleUrl: './profile.css',
-  standalone: true,
-  imports: [RouterLink],
+  selector: 'app-doctor-profile',
+  imports: [],
+  templateUrl: './doctor-profile.html',
+  styleUrl: './doctor-profile.css',
 })
-export class Profile implements OnInit {
+export class DoctorProfile {
   profilePicture = signal<string | null>(null);
-  userData = signal<any>(null);
+  doctorData = signal<any>(null);
   isUploading = signal<boolean>(false);
 
   constructor(private apiService: ApiService) {}
@@ -21,16 +20,16 @@ export class Profile implements OnInit {
     if (cachedPhoto) this.profilePicture.set(cachedPhoto);
 
     // 2. Load "Truth" from Backend
-    this.getUserData();
+    this.getDoctorData();
   }
 
-  getUserData() {
-    this.apiService.getCurrentUserData().subscribe({
+  getDoctorData() {
+    this.apiService.getCurrentDoctorData().subscribe({
       next: (res) => {
-        this.userData.set(res.data);
-        if (res.data.profilePictureUrl) {
-          this.profilePicture.set(res.data.profilePictureUrl);
-          localStorage.setItem('user_photo', res.data.profilePictureUrl);
+        this.doctorData.set(res.data);
+        if (res.data.user.profilePictureUrl) {
+          this.profilePicture.set(res.data.user.profilePictureUrl);
+          localStorage.setItem('user_photo', res.data.user.profilePictureUrl);
         }
       },
     });

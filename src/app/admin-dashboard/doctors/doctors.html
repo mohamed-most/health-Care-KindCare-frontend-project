@@ -1,0 +1,69 @@
+<div class="animate-in fade-in duration-500">
+  <div class="mb-8">
+    <h1 class="text-3xl font-black text-slate-900">Medical Staff</h1>
+    <p class="text-slate-500 mt-1">Manage hospital practitioners and their specializations.</p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4">
+    @if (isLoading()) {
+      <div class="p-10 text-center text-slate-400">
+        <div
+          class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-purple-600 rounded-full mb-2"
+        ></div>
+        <p>Fetching staff records...</p>
+      </div>
+    } @else {
+      @for (doctor of doctors(); track doctor.id) {
+        <div
+          class="bg-white p-6 rounded-[1.5rem] border border-slate-100 border-l-[6px] border-l-purple-500 shadow-sm hover:shadow-xl transition-all group"
+        >
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-5">
+              <div
+                class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"
+              >
+                🩺
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-800 text-xl">{{ doctor.user.name }}</h3>
+                <div class="flex items-center gap-2 mt-1">
+                  <span
+                    class="bg-purple-100 text-purple-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter"
+                  >
+                    {{ doctor.specialization.replace('_', ' ') }}
+                  </span>
+                  <span class="text-slate-400 text-xs font-mono font-bold">
+                    #{{ doctor.licenseNumber }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <p class="text-slate-500 text-sm mb-2 font-medium">{{ doctor.user.email }}</p>
+              <div class="flex items-center justify-end gap-3">
+                <button
+                  class="px-4 py-2 bg-slate-50 text-slate-600 text-xs font-bold rounded-xl hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                >
+                  Edit Profile
+                </button>
+                <button
+                  class="text-xs font-bold text-purple-600 hover:translate-x-1 transition-transform"
+                >
+                  View Schedule →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div
+          class="p-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-slate-200"
+        >
+          <div class="text-4xl mb-4 text-slate-300">👨‍⚕️</div>
+          <p class="text-slate-400 font-medium">No doctors are registered in the system yet.</p>
+        </div>
+      }
+    }
+  </div>
+</div>

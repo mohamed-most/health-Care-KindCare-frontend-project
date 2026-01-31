@@ -106,9 +106,9 @@
         class="w-full px-4 py-3.5 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none cursor-pointer focus:bg-white focus:border-blue-500 transition-all"
       >
         <option value="" disabled selected>Select your field</option>
-        <option value="Cardiology">Cardiology</option>
-        <option value="Dermatology">Dermatology</option>
-        <option value="Orthopedics">Orthopedics</option>
+        @for (specialization of specializations(); track $index) {
+          <option [value]="specialization">{{ specialization }}</option>
+        }
       </select>
     </div>
 

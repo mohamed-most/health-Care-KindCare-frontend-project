@@ -2,22 +2,24 @@ import { Component, signal, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [NgIf, NgClass, NgFor, FormsModule],
+  imports: [NgIf, NgClass, NgFor, FormsModule, RouterLink, RouterOutlet],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
 export class AdminDashboard implements OnInit {
   // Navigation View States
-  isPatientButtonClicked = signal(false);
+
   isDoctorButtonClicked = signal(false);
   isFaqButtonClicked = signal(false);
 
   // Data Stores
-  patients = signal<any[]>([]);
+
   doctors = signal<any[]>([]);
   faqs = signal<any[]>([]);
 
@@ -27,22 +29,18 @@ export class AdminDashboard implements OnInit {
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
-    this.getAllPatients();
     this.getAllDoctors();
     this.getAllFaqs();
   }
 
   // --- Data Fetching ---
-  getAllPatients() {
-    this.apiService.getAllPatients().subscribe({
-      next: (res) => this.patients.set(res.data),
-      error: (err) => console.error('Patient load failed', err),
-    });
-  }
 
   getAllDoctors() {
     this.apiService.getAllDoctors().subscribe({
-      next: (res) => this.doctors.set(res.data),
+      next: (res) => {
+        console.log(res);
+        this.doctors.set(res.data);
+      },
       error: (err) => console.error('Doctor load failed', err),
     });
   }
@@ -68,10 +66,6 @@ export class AdminDashboard implements OnInit {
   }
 
   // --- Navigation Handlers ---
-  handlePatientClick() {
-    this.resetViews();
-    this.isPatientButtonClicked.set(true);
-  }
 
   handleDoctorClick() {
     this.resetViews();
@@ -84,8 +78,20 @@ export class AdminDashboard implements OnInit {
   }
 
   private resetViews() {
-    this.isPatientButtonClicked.set(false);
+    // this.isPatientButtonClicked.set(false);
     this.isDoctorButtonClicked.set(false);
     this.isFaqButtonClicked.set(false);
+  }
+
+  // ############### Specializations ###############
+  isSpecializationButtonClicked = signal(false);
+  specializations = signal([]);
+  handleSpecializationClick(event: Event) {
+    event.preventDefault();
+    this.isSpecializationButtonClicked.update((value) => !value);
+    this.apiService.getSpecializations().subscribe({
+      next: (res) => this.specializations.set(res.data),
+      error: (err) => console.error('Specialization load failed', err),
+    });
   }
 }

@@ -1,9 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../api-service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
 @Component({
   selector: 'app-doctor-reg',
   standalone: true,
@@ -12,6 +11,8 @@ import { Router } from '@angular/router';
   styleUrl: './doctor-reg.css',
 })
 export class DoctorReg implements OnDestroy {
+  specializations = signal([]);
+
   doctorForm = new FormGroup({
     fullName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -31,6 +32,10 @@ export class DoctorReg implements OnDestroy {
     private apiService: ApiService,
     private router: Router,
   ) {}
+
+  ngOnInit() {
+    this.getAllSpecializations();
+  }
 
   onSubmitForm(event: Event) {
     event.preventDefault();
@@ -73,6 +78,18 @@ export class DoctorReg implements OnDestroy {
       this.doctorForm.reset();
       this.router.navigate(['/login']);
     }, 3000);
+  }
+
+  getAllSpecializations() {
+    this.apiService.getSpecializations().subscribe({
+      next: (response) => {
+        console.log(response.data);
+        this.specializations.set(response.data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   }
 
   ngOnDestroy() {

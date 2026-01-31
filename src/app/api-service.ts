@@ -5,15 +5,21 @@ import { ApiResponse } from './model/ApiResponse';
 import { RegisterResponse } from './model/RegisterResponse';
 import { Observable } from 'rxjs';
 import LoginResponse from './model/LoginResponse';
-
+import { jwtDecode } from 'jwt-decode';
+import { signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private API_BASE_URL = 'http://localhost:8081/api/v1';
 
+  // The global state
+  isLoggedIn = signal<boolean>(localStorage.getItem('token') !== null);
+  userRole = signal<string | null>(localStorage.getItem('user_role'));
+
   constructor(private http: HttpClient) {}
 
+  // ########################################################
   // Auth api
   public register(body: any): Observable<any> {
     return this.http.post<ApiResponse<RegisterResponse>>(
@@ -27,13 +33,28 @@ export class ApiService {
   }
 
   public logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_role');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('isLoggedIn');
+    localStorage.clear();
+  }
+  getToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+  hasRole(role: string): boolean {
+    const userRole = localStorage.getItem('user_role');
+    return userRole === role;
   }
 
-  // ########################################################
+  isAuthenticated(): boolean {
+    return this.getToken() !== null;
+  }
+
+  isDoctor(): boolean {
+    return this.hasRole('DOCTOR');
+  }
+
+  isPatient(): boolean {
+    return this.hasRole('PATIENT');
+  }
+  // ################################################################
 
   // Admin api
 
@@ -60,6 +81,13 @@ export class ApiService {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
     });
   }
+
+  public getCurrentDoctorData(): Observable<any> {
+    return this.http.get(`${this.API_BASE_URL}/doctors/me`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
+    });
+  }
+
   //########################################################
 
   // GET All FAQ
@@ -72,6 +100,13 @@ export class ApiService {
   // POST FAQ
   public addFaq(body: any): Observable<any> {
     return this.http.post(`${this.API_BASE_URL}/faq`, body, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
+    });
+  }
+
+  // DELETE FAQ
+  public deleteFaq(id: number): Observable<any> {
+    return this.http.delete(`${this.API_BASE_URL}/faq/${id}`, {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
     });
   }
@@ -110,5 +145,24 @@ export class ApiService {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
       },
     );
+  }
+
+  // #########################Uplaod image######################
+  public uploadImage(file: File): Observable<any> {
+    const body = new FormData();
+    body.append('file', file);
+    return this.http.put(`${this.API_BASE_URL}/users/profile-picture`, body, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
+    });
+  }
+  public getCurrentUserData(): Observable<any> {
+    return this.http.get(`${this.API_BASE_URL}/users/me`, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('access_token') },
+    });
+  }
+
+  //###################### MetaData #######################
+  public getSpecializations(): Observable<any> {
+    return this.http.get(`${this.API_BASE_URL}/metadata/specializations`);
   }
 }
